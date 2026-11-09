@@ -1,0 +1,17 @@
+{
+  "name": "luogu-renderer",
+  "version": "1.0.0",
+  "private": true,
+  "description": "复现洛谷（www.luogu.com.cn）的 Markdown 渲染器与编辑器",
+  "license": "UNLICENSED",
+  "scripts": {
+    "build": "node build.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "devDependencies": {
+    "acorn": "^8.19.0",
+    "astring": "^1.9.0"
+  }
+}

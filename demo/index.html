@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="no-js">
+<head>
+<meta charset="utf-8">
+<title>LuoguRenderer</title>
+<link rel="stylesheet" href="luogu-render.css">
+<style>html,body{margin:0;height:100%}#app{min-height:100vh}</style>
+</head>
+<body>
+<div id="app" class="lfe-body"></div>
+<!-- 本页只调用接口：想渲染调 luoguRender，想挂编辑器调 luoguEditor.mount -->
+<script src="luogu-renderer.js"></script>
+<script>
+window.luoguEditor.mount(document.getElementById("app"),
+  ["# 标题一","","**粗体** *斜体* ~~删除线~~ `行内代码`","[a链接](https://www.luogu.com.cn)","","- 无序列表","1. 有序列表","","| 表头A | 表头B |","| --- | :-: |","| 内容 | 居中 |","","> 引用块","","---","","```cpp","int main(){return 0;}","```","","行内公式 $a_1+b^{2c}$ 与显示公式：","","$$\\sum_{i=1}^{n}\\frac{1}{i^2}$$","","<!-- readmore -->",""].join("\n"));
+</script>
+</body>
+</html>
