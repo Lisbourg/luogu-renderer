@@ -12,6 +12,7 @@
 import { h, defineComponent, createApp, markRaw } from '../bridge/vue.js';
 import { CasketStar } from './casket-star.js';
 import { casketDefaultPluginsFactory } from './plugins.js';
+import { englishTable, chineseTable } from './i18n.js';
 import { getRemarkPlugins, getRehypePlugins } from '../markdown/index.js';
 import { buildMarkdownConfig, markdownBaseLanguage } from '../bridge/codemirror.js';
 import { LCode } from '../ui/code-block.js';
@@ -20,8 +21,11 @@ import { LCode } from '../ui/code-block.js';
  * 组装 casket 编辑器应用。
  * @param {{ getText: () => string, setText: (v: string) => void }} textBind
  *   编辑器文本的读写入口（由挂载方决定存哪里）。
+ * @param {{ locale?: string }} [options]
+ *   工具栏/弹窗文案语言：'zh-CN'（默认，与真站中文用户一致）或 'en'。
  */
-export function createCasketApp(textBind) {
+export function createCasketApp(textBind, options = {}) {
+  const locale = options.locale === 'en' ? 'en' : 'zh-CN';
   const plugins = casketDefaultPluginsFactory();
   plugins.remark = getRemarkPlugins();
   plugins.rehype = getRehypePlugins();
@@ -35,9 +39,11 @@ export function createCasketApp(textBind) {
 
   const Root = defineComponent({
     setup() {
+      /* 工具栏语言选表：同真站包装层 —— zh-CN 传中文表，其余回退英文底表 */
       return () => h(CasketStar, {
         modelValue: textBind.getText(),
         'onUpdate:modelValue': (v) => textBind.setText(v),
+        lang: [locale === 'zh-CN' ? chineseTable : englishTable],
         plugins,
       });
     },

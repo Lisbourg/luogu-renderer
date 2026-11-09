@@ -31,7 +31,8 @@ window.luoguRenderInto(el, md)     // → Promise（渲染进 el）
 window.luoguRenderVNode(md)        // → Promise<VNode>
 
 // 编辑器
-window.luoguEditor.mount(el, initialText?)  // 挂载编辑器，返回 Vue app
+window.luoguEditor.mount(el, initialText?, options?)  // 挂载编辑器，返回 Vue app
+//   options.locale：文案语言，'zh-CN'（默认，同真站中文用户）或 'en'
 window.luoguEditor.unmount()                // 卸载（可重新 mount）
 window.luoguEditor.getText() / setText(t)   // 读写 markdown 文本
 window.luoguEditor.onChange(fn) / isMounted()
@@ -78,7 +79,7 @@ npm run build   # 产物：dist/luogu-renderer.js（单文件 IIFE）
 │   │   ├── toolbar.js       工具栏
 │   │   ├── toolbar-buttons.js  20 个按钮的定义与编辑动作
 │   │   ├── dialogs.js       插入弹窗（代码/图片/表格/链接/帮助/自动保存）
-│   │   ├── i18n.js          工具栏文案
+│   │   ├── i18n.js          工具栏/弹窗文案双词表（中文默认生效）
 │   │   ├── toolbar-icons.js 图标表
 │   │   └── fontawesome.js   Font Awesome 运行产物（第三方，不手工维护）
 │   ├── ui/                  渲染层组件

@@ -295,18 +295,19 @@ const tbIncreaseLevel = {
         keymap: "Mod-Shift-2",
         func: (cm, casketstar, dialogContainer) => {
             const dialogVNode = createVNode(ToolTable, {
-                confirm: function (cols, rows, grid) {
+                /* ToolTable 确认时回传 (行数, 列数, 网格)，grid[row][col] */
+                confirm: function (rows, cols, grid) {
                     // 每列宽度 = max(3, 本列最长单元格)，封顶 10
                     const colWidths = [];
-                    for (let c = 0; c < rows; c++) {
+                    for (let c = 0; c < cols; c++) {
                         let width = 3;
-                        for (let r = 0; r < cols; r++) width = Math.max(width, grid[r][c].length);
+                        for (let r = 0; r < rows; r++) width = Math.max(width, grid[r][c].length);
                         width > 10 && (width = 10), colWidths.push(width)
                     }
                     const state = cm.state,
                         transaction = state.update(state.changeByRange((range => {
                             let md = "";
-                            for (let r = 0; r < cols; r++) {
+                            for (let r = 0; r < rows; r++) {
                                 for (let c = 0; c < colWidths.length; c++) {
                                     const pad = colWidths[c] - grid[r][c].length;
                                     md += "|" + grid[r][c] + " ".repeat(pad > 0 ? pad : 0)

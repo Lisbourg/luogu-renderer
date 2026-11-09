@@ -1,8 +1,10 @@
-/* 工具栏文案 i18n：英文底表 + 可选语言表覆盖；translateToolbarText(key)
- * 查当前生效的表，查不到原样返回 key。CasketStar 挂载时按 lang prop 重建。 */
+/* 工具栏文案 i18n：两份词表（英文底表 + 简体中文表）+ 翻译函数。
+ * 真站由编辑器外层包装按 vue-i18n 的 locale 选表（zh-CN → 中文表）传给
+ * CasketStar 的 lang prop；CasketStar 挂载时把 lang 合并进英文底表。
+ * translateToolbarText(key) 查当前生效的表，查不到原样返回 key。 */
 
 /* ================================================================== */
-const englishTable = {
+export const englishTable = {
         "increase-level": "increase headline",
         "decrease-level": "decrease headline",
         horizontal: "horizontal",
@@ -52,7 +54,7 @@ const englishTable = {
         "auto-save-source": "saved page"
 };
 
-const chineseTable = {
+export const chineseTable = {
         "increase-level": "提升一级",
         "decrease-level": "降低一级",
         horizontal: "水平线",

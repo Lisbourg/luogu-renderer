@@ -469,8 +469,7 @@ __modules["500003"] = function (module, exports, __req) {
  * Prism 语言包注册（副作用模块）
  * ----------------------------------------------------------------------------
  * 每个模块加载时向 Prism 全局注册一门语言；基础语言（clike/c/markup）
- * 必须先于依赖它们的扩展语言（cpp/javascript 等）加载
- * （基础语言 clike/c/markup 先于依赖它们的 cpp/javascript 等扩展语言）。
+ * 必须先于依赖它们的扩展语言（cpp/javascript 等）加载。
  * ========================================================================== */
 
 __req("86331");
@@ -700,7 +699,7 @@ __modules["500007"] = function (module, exports, __req) {
 const defineComponent = __req("500006")["defineComponent"]; const ref = __req("500006")["ref"]; const computed = __req("500006")["computed"]; const watch = __req("500006")["watch"]; const nextTick = __req("500006")["nextTick"]; const useModel = __req("500006")["useModel"]; const unref = __req("500006")["unref"]; const openBlock = __req("500006")["openBlock"]; const createElementBlock = __req("500006")["createElementBlock"]; const createElementVNode = __req("500006")["createElementVNode"]; const createVNode = __req("500006")["createVNode"]; const createCommentVNode = __req("500006")["createCommentVNode"]; const renderList = __req("500006")["renderList"]; const mergeDefaults = __req("500006")["mergeDefaults"]; const mergeProps = __req("500006")["mergeProps"]; const useAttrs = __req("500006")["useAttrs"]; const normalizeClass = __req("500006")["normalizeClass"]; const normalizeStyle = __req("500006")["normalizeStyle"]; const toDisplayString = __req("500006")["toDisplayString"]; const isRef = __req("500006")["isRef"]; const Teleport = __req("500006")["Teleport"]; const createBlock = __req("500006")["createBlock"]; const onMounted = __req("500006")["onMounted"]; const onUnmounted = __req("500006")["onUnmounted"]; const Fragment = __req("500006")["Fragment"]; const createTextVNode = __req("500006")["createTextVNode"];
 const throttle = __req("500002")["throttle"]; const sortedIndex = __req("500002")["sortedIndex"];
 const FontAwesomeIcon = __req("500010")["FontAwesomeIcon"];
-const translateToolbarText = __req("500011")["translateToolbarText"]; const setLanguageTables = __req("500011")["setLanguageTables"]; const englishTable = __req("500011")["englishTable"];
+const translateToolbarText = __req("500011")["translateToolbarText"]; const setLanguageTables = __req("500011")["setLanguageTables"];
 const MToolbar = __req("500016")["MToolbar"];
 const MEditor = __req("500009")["MEditor"];
 const MViewer = __req("500017")["MViewer"];
@@ -3958,9 +3957,9 @@ defineComponent({                        // FontAwesomeLayers —— 洛谷未�
     }
 });
 
-    /* ================================================================== */
-/* 工具栏图标表（洛谷自选图标集；本段数据由原 bundle 机械提取，          */
-/* help/format 复用问号图标）                                            */
+/* ================================================================== */
+/* 问号兜底图标：原站工具栏的 help/format 按钮复用它（图标表见
+ * toolbar-icons.js，此处只提供这一枚数据）。                            */
 /* ================================================================== */
 const fallbackQuestionIcon = {
     prefix: "far",
@@ -3976,8 +3975,10 @@ exports.fallbackQuestionIcon = fallbackQuestionIcon;
 ;
 /* src/editor/i18n.js */
 __modules["500011"] = function (module, exports, __req) {
-/* 工具栏文案 i18n：英文底表 + 可选语言表覆盖；translateToolbarText(key)
- * 查当前生效的表，查不到原样返回 key。CasketStar 挂载时按 lang prop 重建。 */
+/* 工具栏文案 i18n：两份词表（英文底表 + 简体中文表）+ 翻译函数。
+ * 真站由编辑器外层包装按 vue-i18n 的 locale 选表（zh-CN → 中文表）传给
+ * CasketStar 的 lang prop；CasketStar 挂载时把 lang 合并进英文底表。
+ * translateToolbarText(key) 查当前生效的表，查不到原样返回 key。 */
 
 /* ================================================================== */
 const englishTable = {
@@ -4094,6 +4095,8 @@ function translateToolbarText(key) {
   return translate(key);
 }
 
+exports.englishTable = englishTable;
+exports.chineseTable = chineseTable;
 exports.setLanguageTables = setLanguageTables;
 exports.translateToolbarText = translateToolbarText;
 }
@@ -4114,6 +4117,7 @@ __modules["500012"] = function (module, exports, __req) {
 const h = __req("500006")["h"]; const defineComponent = __req("500006")["defineComponent"]; const createApp = __req("500006")["createApp"]; const markRaw = __req("500006")["markRaw"];
 const CasketStar = __req("500007")["CasketStar"];
 const casketDefaultPluginsFactory = __req("500013")["casketDefaultPluginsFactory"];
+const englishTable = __req("500011")["englishTable"]; const chineseTable = __req("500011")["chineseTable"];
 const getRemarkPlugins = __req("500019")["getRemarkPlugins"]; const getRehypePlugins = __req("500019")["getRehypePlugins"];
 const buildMarkdownConfig = __req("500000")["buildMarkdownConfig"]; const markdownBaseLanguage = __req("500000")["markdownBaseLanguage"];
 const LCode = __req("500029")["LCode"];
@@ -4122,8 +4126,11 @@ const LCode = __req("500029")["LCode"];
  * 组装 casket 编辑器应用。
  * @param {{ getText: () => string, setText: (v: string) => void }} textBind
  *   编辑器文本的读写入口（由挂载方决定存哪里）。
+ * @param {{ locale?: string }} [options]
+ *   工具栏/弹窗文案语言：'zh-CN'（默认，与真站中文用户一致）或 'en'。
  */
-function createCasketApp(textBind) {
+function createCasketApp(textBind, options = {}) {
+  const locale = options.locale === 'en' ? 'en' : 'zh-CN';
   const plugins = casketDefaultPluginsFactory();
   plugins.remark = getRemarkPlugins();
   plugins.rehype = getRehypePlugins();
@@ -4137,9 +4144,11 @@ function createCasketApp(textBind) {
 
   const Root = defineComponent({
     setup() {
+      /* 工具栏语言选表：同真站包装层 —— zh-CN 传中文表，其余回退英文底表 */
       return () => h(CasketStar, {
         modelValue: textBind.getText(),
         'onUpdate:modelValue': (v) => textBind.setText(v),
+        lang: [locale === 'zh-CN' ? chineseTable : englishTable],
         plugins,
       });
     },
@@ -4490,18 +4499,19 @@ const tbIncreaseLevel = {
         keymap: "Mod-Shift-2",
         func: (cm, casketstar, dialogContainer) => {
             const dialogVNode = createVNode(ToolTable, {
-                confirm: function (cols, rows, grid) {
+                /* ToolTable 确认时回传 (行数, 列数, 网格)，grid[row][col] */
+                confirm: function (rows, cols, grid) {
                     // 每列宽度 = max(3, 本列最长单元格)，封顶 10
                     const colWidths = [];
-                    for (let c = 0; c < rows; c++) {
+                    for (let c = 0; c < cols; c++) {
                         let width = 3;
-                        for (let r = 0; r < cols; r++) width = Math.max(width, grid[r][c].length);
+                        for (let r = 0; r < rows; r++) width = Math.max(width, grid[r][c].length);
                         width > 10 && (width = 10), colWidths.push(width)
                     }
                     const state = cm.state,
                         transaction = state.update(state.changeByRange((range => {
                             let md = "";
-                            for (let r = 0; r < cols; r++) {
+                            for (let r = 0; r < rows; r++) {
                                 for (let c = 0; c < colWidths.length; c++) {
                                     const pad = colWidths[c] - grid[r][c].length;
                                     md += "|" + grid[r][c] + " ".repeat(pad > 0 ? pad : 0)
@@ -4864,10 +4874,6 @@ const toolbarIconMap = {
 };
 
 
-/* ================================================================== */
-/* 弹窗体系（casket-dialog）                                            */;
-
-
 
 exports.toolbarIconMap = toolbarIconMap;
 }
@@ -5062,7 +5068,8 @@ __modules["500018"] = function (module, exports, __req) {
  *   luoguRenderInto(el, md)      → Promise（渲染进指定元素）
  *   luoguRenderVNode(md)         → Promise<VNode>
  * 编辑器：完整 casket 编辑器（工具栏 / CodeMirror 编辑区 / 预览 / 自动保存）。
- *   luoguEditor.mount(el, initialText?) 等，见 editor/index.js。
+ *   luoguEditor.mount(el, initialText?, options?) 等，见 editor/index.js；
+ *   文案语言默认简体中文（同真站中文用户），options.locale 可选 'en'。
  *
  * 本模块加载后不产生任何 DOM 副作用；只有调用接口才动作。
  * ========================================================================== */
@@ -5128,8 +5135,9 @@ let editorApp = null;
 const changeListeners = [];
 
 const luoguEditor = {
-  /** 挂载编辑器到 el；initialText 为初始 markdown。返回 Vue app 实例。 */
-  mount(el, initialText) {
+  /** 挂载编辑器到 el；initialText 为初始 markdown，options 可选
+    * { locale } 控制工具栏/弹窗文案语言（默认 'zh-CN'，可选 'en'）。返回 Vue app。 */
+  mount(el, initialText, options) {
     if (!el) throw new Error('luoguEditor.mount(el[, initialText]): el 不能为空');
     if (editorApp) return editorApp;
     editorState = ref(initialText || '');
@@ -5139,7 +5147,7 @@ const luoguEditor = {
         editorState.value = v;
         for (const fn of changeListeners) fn(v);
       },
-    });
+    }, options);
     editorApp.mount(el);
     return editorApp;
   },

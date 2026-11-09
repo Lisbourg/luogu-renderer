@@ -15,7 +15,7 @@ import {
 } from '../bridge/vue.js';
 import { throttle, sortedIndex } from '../bridge/lodash.js';
 import { FontAwesomeIcon } from './fontawesome.js';
-import { translateToolbarText, setLanguageTables, englishTable } from './i18n.js';
+import { translateToolbarText, setLanguageTables } from './i18n.js';
 import { MToolbar } from './toolbar.js';
 import { MEditor } from './edit-area.js';
 import { MViewer } from './viewer.js';

@@ -122,8 +122,4 @@ const toolbarIconMap = {
     format: fallbackQuestionIcon
 };
 
-
-/* ================================================================== */
-/* 弹窗体系（casket-dialog）                                            */;
-
 export { toolbarIconMap };

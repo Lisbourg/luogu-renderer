@@ -6,7 +6,8 @@
  *   luoguRenderInto(el, md)      → Promise（渲染进指定元素）
  *   luoguRenderVNode(md)         → Promise<VNode>
  * 编辑器：完整 casket 编辑器（工具栏 / CodeMirror 编辑区 / 预览 / 自动保存）。
- *   luoguEditor.mount(el, initialText?) 等，见 editor/index.js。
+ *   luoguEditor.mount(el, initialText?, options?) 等，见 editor/index.js；
+ *   文案语言默认简体中文（同真站中文用户），options.locale 可选 'en'。
  *
  * 本模块加载后不产生任何 DOM 副作用；只有调用接口才动作。
  * ========================================================================== */
@@ -72,8 +73,9 @@ let editorApp = null;
 const changeListeners = [];
 
 export const luoguEditor = {
-  /** 挂载编辑器到 el；initialText 为初始 markdown。返回 Vue app 实例。 */
-  mount(el, initialText) {
+  /** 挂载编辑器到 el；initialText 为初始 markdown，options 可选
+    * { locale } 控制工具栏/弹窗文案语言（默认 'zh-CN'，可选 'en'）。返回 Vue app。 */
+  mount(el, initialText, options) {
     if (!el) throw new Error('luoguEditor.mount(el[, initialText]): el 不能为空');
     if (editorApp) return editorApp;
     editorState = ref(initialText || '');
@@ -83,7 +85,7 @@ export const luoguEditor = {
         editorState.value = v;
         for (const fn of changeListeners) fn(v);
       },
-    });
+    }, options);
     editorApp.mount(el);
     return editorApp;
   },

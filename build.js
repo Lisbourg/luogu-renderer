@@ -183,7 +183,7 @@ function compileModule(file) {
   for (const e of edits) body = body.slice(0, e.start) + e.text + body.slice(e.end);
   if (tail.length) body += '\n' + tail.join('\n') + '\n';
 
-  /* 去掉可能残留的 "use strict"（工厂外层已统一 strict）——保留也无害，原样不动 */
+  /* 模块体内的 "use strict" 不特意处理：工厂外层已统一 strict，保留也无害 */
   const header = `function (module, exports, __req) {\n`;
   return header + body + '}\n';
 }
